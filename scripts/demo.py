@@ -1,11 +1,9 @@
 from hypergraph_properties.hypergraph import Hypergraph
-from hypergraph_properties.isomorphism import (
-    is_isomorphic,
-    induced_vertex_mapping_from_incidence_mapping,
-    hypergraph_automorphisms,
-)
+from hypergraph_properties.isomorphism import *
+from hypergraph_properties.partitions import *
+from hypergraph_properties.isomorphism_classes import *
 
-def main():
+def demo1():
     H = Hypergraph.from_edges([{1, 2, 3}, {3, 4}, {2, 4}])
     print(H)
 
@@ -25,6 +23,17 @@ def main():
     autos = hypergraph_automorphisms(H2)
     print("\nAutomorphisms:", autos)
 
+def demo2():
+    k1=3
+    hs = generate_nonisomorphic_hypergraphs(k=k1, alpha=2)
+    print("Found:", len(hs))
+    for i, H in enumerate(hs):
+        print("\n===", i, "===")
+        print(hypergraph_to_set_of_sets_string(H))
+
+    write_hypergraphs_to_file(hs, "hypergraphs_k"+str(k1)+"_a2.txt")
+    print("\nWrote to hypergraphs_k2_a2.txt")
+
 
 if __name__ == "__main__":
-    main()
+    demo2()

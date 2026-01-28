@@ -1,3 +1,4 @@
+import math
 def normalize_partition(partition):
     blocks = []
     for blk in partition:
@@ -54,3 +55,11 @@ def all_partitions(n):
             result.append(new_part)
 
     return result
+
+def moebius_function(partition):
+    """
+    Compute the moebius function for a given partition rho:
+    mu(rho) = (-1)^(|rho|-1) * (|rho|-1)!
+    """
+    rho = len(partition)
+    return (-1) ** (rho - 1) * math.factorial(rho - 1)
