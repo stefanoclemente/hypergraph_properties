@@ -25,13 +25,14 @@ def demo1():
 
 def demo2():
     k1=3
-    hs = generate_nonisomorphic_hypergraphs(k=k1, alpha=2)
-    print("Found:", len(hs))
-    for i, H in enumerate(hs):
-        print("\n===", i, "===")
-        print(hypergraph_to_set_of_sets_string(H))
+    alpha1=4
+    hs = generate_nonisomorphic_hypergraphs(k=k1, alpha=alpha1)
+    #print("Found:", len(hs))
+    #for i, H in enumerate(hs):
+    #    print("\n===", i, "===")
+    #    print(hypergraph_to_set_of_sets_string(H))
 
-    write_hypergraphs_to_file(hs, "hypergraphs_k"+str(k1)+"_a2.txt")
+    write_hypergraphs_to_file(hs, "hypergraphs_k"+str(k1)+"_"+str(alpha1)+".txt")
     print("\nWrote to hypergraphs_k2_a2.txt")
 
 
