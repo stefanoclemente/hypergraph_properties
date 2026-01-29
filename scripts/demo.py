@@ -2,6 +2,7 @@ from hypergraph_properties.hypergraph import Hypergraph
 from hypergraph_properties.isomorphism import *
 from hypergraph_properties.partitions import *
 from hypergraph_properties.isomorphism_classes import *
+from hypergraph_properties.venn_graphlets import VennGraphlet3
 
 def demo1():
     H = Hypergraph.from_edges([{1, 2, 3}, {3, 4}, {2, 4}])
@@ -25,7 +26,7 @@ def demo1():
 
 def demo2():
     k1=3
-    alpha1=4
+    alpha1=2
     hs = generate_nonisomorphic_hypergraphs(k=k1, alpha=alpha1)
     #print("Found:", len(hs))
     #for i, H in enumerate(hs):
@@ -35,6 +36,11 @@ def demo2():
     write_hypergraphs_to_file(hs, "hypergraphs_k"+str(k1)+"_"+str(alpha1)+".txt")
     print("\nWrote to hypergraphs_k2_a2.txt")
 
+def demo3():
+    g = VennGraphlet3.from_edges({1, 3, 4}, {2, 3}, {1, 2, 3})
+    print(g.bits())       
+    print(g.describe())   
+
 
 if __name__ == "__main__":
-    demo2()
+    demo3()
