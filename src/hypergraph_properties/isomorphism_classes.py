@@ -50,8 +50,8 @@ def _incidence_graph_from_masks(edge_masks, n):
         B.add_node(("v", v), bipartite=0)
 
     # Add edge-side nodes + incidence edges.
-    for eid, m in enumerate(edge_masks):
-        enode = ("e", eid)
+    for e_id, m in enumerate(edge_masks):
+        enode = ("e", e_id)
         sz = _popcount(m)
         B.add_node(enode, bipartite=1, size=sz)
 
