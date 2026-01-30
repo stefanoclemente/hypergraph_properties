@@ -1,7 +1,14 @@
 class Hypergraph:
     """
-    Minimal hypergraph H = (V, E) focused on:
-      - quotient hypergraph construction w.r.t. a vertex partition
+    Minimal hypergraph H = (V, E) focused on quotient hypergraph construction w.r.t. a vertex partition
+
+    Hyperedges are represented as immutable sets - i.e. frozensets. 
+    
+    Why sets: efficiency, as long as we do not require any internal sorting of the vertices
+
+    Why frozensets: more memory-efficient than sets, hashable.
+
+
     """
 
     def __init__(self, vertices=None, edges=None, vertex_attrs=None, edge_attrs=None):

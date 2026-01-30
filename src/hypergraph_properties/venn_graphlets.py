@@ -20,7 +20,7 @@ def _regions_signature(A, B, C):
     representation describes the emptiness pattern of the 7 regions.
     """
 
-    r1 = A - B - C
+    r1 = A - B - C #  The difference operation on sets. The results is 0 iff the difference is the empty set.
     r2 = B - C - A
     r3 = C - A - B
     r4 = (A & B) - C
@@ -132,16 +132,15 @@ class VennGraphlet3:
             via a lookup table.
     """
 
-    def __init__(self, e1, e2, e3, raw_signature, signature, motif_id=None):
+    def __init__(self, e1, e2, e3, raw_signature, signature):
         self.e1 = e1
         self.e2 = e2
         self.e3 = e3
         self.raw_signature = raw_signature
         self.signature = signature
-        self.motif_id = motif_id
 
     @staticmethod
-    def from_edges(e1, e2, e3, signature_to_id=None):
+    def from_edges(e1, e2, e3):
         """
         Build a VennGraphlet3 from three iterable edge objects.
 
@@ -156,14 +155,11 @@ class VennGraphlet3:
         raw = _regions_signature(A, B, C)
         sig = canonical_signature(raw)
 
-        motif_id = None
-        if signature_to_id is not None:
-            motif_id = signature_to_id.get(sig)
 
-        return VennGraphlet3(A, B, C, raw_signature=raw, signature=sig, motif_id=motif_id)
+        return VennGraphlet3(A, B, C, raw_signature=raw, signature=sig)
 
     @staticmethod
-    def classify_hypergraph(H, signature_to_id=None):
+    def classify_hypergraph(H):
         """
         Build a VennGraphlet3 directly from a Hypergraph instance H.
 
@@ -174,13 +170,12 @@ class VennGraphlet3:
 
         e1, e2, e3 = H.edges[0], H.edges[1], H.edges[2]
         return VennGraphlet3.from_edges(
-            e1, e2, e3,
-            signature_to_id=signature_to_id
+            e1, e2, e3
         )
 
     def bits(self):
         """
-        Return the 7 canonical signature bits as a tuple (bit0, ..., bit6).
+        Return the 7 canonical signature bits as a tuple.
 
         bit i = 1 means that region (i+1) is non-empty.
         """
