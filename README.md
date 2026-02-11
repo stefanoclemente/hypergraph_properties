@@ -1,5 +1,4 @@
-0. Hypergraph structure (see hypergraphs.py)
-==================================================
+1. Hypergraph structure (see hypergraphs.py)
 
 The file "hypergraphs.py" defines the Hypergraph class used throughout the library.
 
@@ -61,9 +60,7 @@ Basic methods
   Returns the degree of vertex v.
 
 
-==================================================
-1. Computing a quotient graph of a hypergraph
-==================================================
+2. Computing a quotient graph of a hypergraph
 
 "Quotient" is a method of the Hypergraph class. Given a Hypergraph object H, it computes 
 its quotient hypergraph induced by a vertex partition.
@@ -74,9 +71,8 @@ Example:
     Hq = H.quotient(partition)
 
 
-==================================================
-2. Hypergraph isomorphism test
-==================================================
+3. Hypergraph isomorphism test
+
 Required import:
 
 from hypergraph_properties.isomorphism_classes import *
@@ -98,9 +94,7 @@ Example2:
 	iso = is_isomorphic(H1, H2, return_mapping=False)
 	iso, mapping = is_isomorphic(H1, H2, return_mapping=True)
 
-==================================================
-3. Hypergraph automorphisms 
-==================================================
+4. Hypergraph automorphisms 
 
 Required import:
 
@@ -114,9 +108,8 @@ autos = hypergraph_automorphisms(H)
 
 To compute the number of automorphism, just compute the length of the list (len(autos)).
 
-==================================================
-4. Venn graphlets
-==================================================
+5. Venn graphlets
+
 Required import: 
 
 from hypergraph_properties.venn_graphlets import VennGraphlet3
@@ -171,9 +164,8 @@ Example:
 	g = VennGraphlet3.from_edges({1, 2, 3}, {3, 4}, {1, 4})
 	g.matches_hypergraph(H)
 
-==================================================
-5. Generation of non-isomorphic hypergraphs
-==================================================
+6. Generation of non-isomorphic hypergraphs
+
 Required import:
 
 from hypergraph_properties.isomorphism_classes import *
