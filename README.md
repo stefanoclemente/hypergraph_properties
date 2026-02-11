@@ -1,180 +1,161 @@
-1. Hypergraph structure (see hypergraphs.py)
+# Hypergraph Properties Library
 
-The file "hypergraphs.py" defines the Hypergraph class used throughout the library.
+## 0. Hypergraph Structure (see hypergraphs.py)
 
+The file `hypergraphs.py` defines the Hypergraph class used throughout the library.
 
-Required import: 
+### Required import
 
 from hypergraph_properties.hypergraphs import Hypergraph
 
+### Hypergraph representation
+
 A hypergraph is represented by:
 - a (frozen) set of vertices (vertices can be numbers, strings, any python object)
-- a list of hyperedges, each represented as a (frozen)set of vertices
+- a list of hyperedges, each represented as a (frozen) set of vertices
 
 Important:
-- duplicate hyperedges are automatically removed.
-- empty hyperedges are not allowed.
+- duplicate hyperedges are automatically removed
+- empty hyperedges are not allowed
 
+### Construction
 
 Hypergraphs can be constructed either by explicitly specifying vertices and edges or directly from a list of hyperedges.
 
-Example1:
-
+Example 1:
 
     H = Hypergraph(vertices=[0, 1, 2, 3], edges=[{0, 1, 2}, {2, 3}])
 
-Example2:
+Example 2:
 
     H1 = Hypergraph.from_edges([{0, 1, 2}, {2, 3}])
     H2 = Hypergraph.from_edges([{"a", "b", "d"}, {"c", "e"}])
---------------------------------------------------
-Core attributes
---------------------------------------------------
 
-- self.vertices
+### Core attributes
+
+- self.vertices  
   Set of vertices.
 
-- self.edges
-  List of hyperedges, represented as (frozen)sets of vertices.
+- self.edges  
+  List of hyperedges, represented as (frozen) sets of vertices.
 
---------------------------------------------------
-Basic methods
---------------------------------------------------
+### Basic methods
 
-- add_vertex(v, **attrs)
+- add_vertex(v, **attrs)  
   Adds a vertex and optional attributes.
 
-- add_edge(nodes, **attrs)
+- add_edge(nodes, **attrs)  
   Adds a hyperedge; returns its index or None if the edge already exists.
 
-- num_vertices()
+- num_vertices()  
   Returns the number of vertices.
 
-- num_edges()
+- num_edges()  
   Returns the number of hyperedges.
 
-- edge_sizes()
+- edge_sizes()  
   Returns a list with the size of each hyperedge.
 
-- degree(v)
+- degree(v)  
   Returns the degree of vertex v.
 
+## 1. Computing a Quotient Graph of a Hypergraph
 
-2. Computing a quotient graph of a hypergraph
-
-"Quotient" is a method of the Hypergraph class. Given a Hypergraph object H, it computes 
-its quotient hypergraph induced by a vertex partition.
+The method `quotient` of the Hypergraph class computes the quotient hypergraph induced by a vertex partition.
 
 Example:
 
     partition = [{0, 1}, {2, 3}]
     Hq = H.quotient(partition)
 
+## 2. Hypergraph Isomorphism Test
 
-3. Hypergraph isomorphism test
-
-Required import:
+### Required import
 
 from hypergraph_properties.isomorphism_classes import *
 
-The function "is_isomorphic" checks hypergraph isomorphism between two Hypergraph objects H1 and H2 by running NetworkX GraphMatcher on the bipartite
-incidence graphs of H1 and H2.
+The function `is_isomorphic` checks hypergraph isomorphism between two Hypergraph objects H1 and H2 by running NetworkX GraphMatcher on the bipartite incidence graphs of H1 and H2.
 
-Example1: 
+Example 1:
 
-	is_isomorphic(H1, H2)
+    is_isomorphic(H1, H2)
 
 Return:
 - If return_mapping=False: it returns a Boolean value (True or False)
-- If return_mapping=True: it also returns a mapping on the bipartite
-    graph node (or None if not isomorphic).
+- If return_mapping=True: it also returns a mapping on the bipartite graph nodes (or None if not isomorphic)
 
-Example2:
+Example 2:
 
-	iso = is_isomorphic(H1, H2, return_mapping=False)
-	iso, mapping = is_isomorphic(H1, H2, return_mapping=True)
+    iso = is_isomorphic(H1, H2, return_mapping=False)
+    iso, mapping = is_isomorphic(H1, H2, return_mapping=True)
 
-4. Hypergraph automorphisms 
+## 3. Hypergraph Automorphisms
 
-Required import:
+### Required import
 
 from hypergraph_properties.isomorphism_classes import *
 
-The function "hypergraph_automorphisms" computes vertex automorphisms of H and returns a dictionary (mapping) ('v': v), 
-each one representing an automorphism of H.
+The function `hypergraph_automorphisms` computes vertex automorphisms of H and returns a list of dictionaries, each one representing an automorphism of H.
 
 Example:
-autos = hypergraph_automorphisms(H)
 
-To compute the number of automorphism, just compute the length of the list (len(autos)).
+    autos = hypergraph_automorphisms(H)
 
-5. Venn graphlets
+To compute the number of automorphisms:
 
-Required import: 
+    len(autos)
+
+## 4. Venn Graphlets
+
+### Required import
 
 from hypergraph_properties.venn_graphlets import VennGraphlet3
 
+Venn graphlets are constructed from three edges of arbitrary size.
 
-Venn graphlets are represented 
+To build a VennGraphlet:
 
-To build a VennGraphlet from three edges (of any size):
-
-
-- VennGraphlet3.from_edges(e1, e2, e3)
-
+    g = VennGraphlet3.from_edges(e1, e2, e3)
 
 Example:
 
-	g = VennGraphlet3.from_edges({1, 2, 3}, {3, 4}, {1, 4})
+    g = VennGraphlet3.from_edges({1, 2, 3}, {3, 4}, {1, 4})
 
-Useful functions:
+### Classify a hypergraph
 
---------------------------------------------------
-VennGraphlet3.classify_hypergraph(H)
---------------------------------------------------
+Given a hypergraph H, its corresponding Venn graphlet can be computed as follows:
 
-Given a hypergraph H, its corresponding Venn graphlet (diagram) can be computed in the following way:
-
-
-- g = VennGraphlet3.classify_hypergraph(H)
-
+    g = VennGraphlet3.classify_hypergraph(H)
 
 Example:
-	H = Hypergraph.from_edges([{0, 1, 2}, {2, 3}, {4, 5, 6}])
- 	g = VennGraphlet3.classify_hypergraph(H)
 
---------------------------------------------------
-VennGraphlet3.describe()
---------------------------------------------------
+    H = Hypergraph.from_edges([{0, 1, 2}, {2, 3}, {4, 5, 6}])
+    g = VennGraphlet3.classify_hypergraph(H)
+
+### Describe a Venn graphlet
 
 Returns a short human-readable description of which regions (patterns of intersection) are present.
 
-Example:
-	
-	s = g.describe()
+    s = g.describe()
 
---------------------------------------------------
-VennGraphlet3.matches_hypergraph(H)
---------------------------------------------------
+### Match a hypergraph
 
-Returns
+Checks whether a hypergraph matches the Venn graphlet pattern.
 
 Example:
-	H = Hypergraph.from_edges([{0, 1, 2}, {2, 3}, {4, 5, 6}])
-	g = VennGraphlet3.from_edges({1, 2, 3}, {3, 4}, {1, 4})
-	g.matches_hypergraph(H)
 
-6. Generation of non-isomorphic hypergraphs
+    g.matches_hypergraph(H)
 
-Required import:
+## 5. Generation of Non-Isomorphic Hypergraphs
+
+### Required import
 
 from hypergraph_properties.isomorphism_classes import *
 
-- To generate a python list all non-isomorphic hypergraphs with arity alpha1 and number of edge k1:
+To generate a list of all non-isomorphic hypergraphs with arity alpha1 and number of edges k1:
 
-	
-	hs = generate_nonisomorphic_hypergraphs(k=k1, alpha=alpha1)
+    hs = generate_nonisomorphic_hypergraphs(k=k1, alpha=alpha1)
 
-- to list them in a .txt file (why: so you do not need to recompute them):
+To save them to a text file:
 
-	write_hypergraphs_to_file(hs, "hypergraphs_k"+str(k1)+"_"+str(alpha1)+".txt")
+    write_hypergraphs_to_file(hs,"hypergraphs_k" + str(k1) + "_" + str(alpha1) +".txt")
