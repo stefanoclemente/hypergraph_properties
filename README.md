@@ -6,7 +6,7 @@ The file `hypergraphs.py` defines the Hypergraph class used throughout the libra
 
 ### Required import
 
-from hypergraph_properties.hypergraphs import Hypergraph
+    from hypergraph_properties.hypergraphs import Hypergraph
 
 ### Hypergraph representation
 
