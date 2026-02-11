@@ -72,7 +72,7 @@ Example:
 
 ### Required import
 
-from hypergraph_properties.isomorphism_classes import *
+    from hypergraph_properties.isomorphism_classes import *
 
 The function `is_isomorphic` checks hypergraph isomorphism between two Hypergraph objects H1 and H2 by running NetworkX GraphMatcher on the bipartite incidence graphs of H1 and H2.
 
@@ -93,7 +93,7 @@ Example 2:
 
 ### Required import
 
-from hypergraph_properties.isomorphism_classes import *
+    from hypergraph_properties.isomorphism_classes import *
 
 The function `hypergraph_automorphisms` computes vertex automorphisms of H and returns a list of dictionaries, each one representing an automorphism of H.
 
@@ -109,7 +109,7 @@ To compute the number of automorphisms:
 
 ### Required import
 
-from hypergraph_properties.venn_graphlets import VennGraphlet3
+    from hypergraph_properties.venn_graphlets import VennGraphlet3
 
 Venn graphlets are constructed from three edges of arbitrary size.
 
@@ -150,7 +150,7 @@ Example:
 
 ### Required import
 
-from hypergraph_properties.isomorphism_classes import *
+    from hypergraph_properties.isomorphism_classes import *
 
 To generate a list of all non-isomorphic hypergraphs with arity alpha1 and number of edges k1:
 
