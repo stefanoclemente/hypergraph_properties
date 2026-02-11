@@ -26,7 +26,7 @@ def demo1():
 
 def demo2():
     k1=3
-    alpha1=2
+    alpha1=3
     hs = generate_nonisomorphic_hypergraphs(k=k1, alpha=alpha1)
     #print("Found:", len(hs))
     #for i, H in enumerate(hs):
@@ -43,4 +43,4 @@ def demo3():
 
 
 if __name__ == "__main__":
-    demo3()
+    demo2()
