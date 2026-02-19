@@ -182,6 +182,36 @@ class VennGraphlet3:
         s = self.signature
         return tuple((s >> i) & 1 for i in range(7))
 
+    def bit_vector(self):
+        """
+        Return the canonical signature as a list of bits.
+
+        Example:
+            [0, 1, 0, 1, 0, 1, 1]
+        """
+        s = self.signature
+        return str([(s >> i) & 1 for i in range(7)])
+    
+    def is_connected(self):
+        """
+        Return True iff the 3-edge hypergraph is connected (via incidence graph),
+        i.e., the intersection graph on {e1,e2,e3} is connected.
+
+        For k=3 this is equivalent to requiring at least two pairwise intersections
+        to be non-empty (a spanning tree) or all three (triangle).
+        """
+        s = self.signature
+        b3 = (s >> 3) & 1  # (e1 ∩ e2) \ e3
+        b4 = (s >> 4) & 1  # (e2 ∩ e3) \ e1
+        b5 = (s >> 5) & 1  # (e3 ∩ e1) \ e2
+        b6 = (s >> 6) & 1  # e1 ∩ e2 ∩ e3
+
+        inter12 = (b3 == 1) or (b6 == 1)
+        inter23 = (b4 == 1) or (b6 == 1)
+        inter31 = (b5 == 1) or (b6 == 1)
+
+        return (inter12 + inter23 + inter31) >= 2
+
     def describe(self):
         """
         Human-readable description using the color convention:

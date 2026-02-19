@@ -125,7 +125,7 @@ def _isomorphic_masks(edge_masks_a, n_a, edge_masks_b, n_b):
     return gm.is_isomorphic()
 
 
-def generate_nonisomorphic_hypergraphs(k, alpha, max_vertices=None, require_no_isolated=True):
+def generate_nonisomorphic_hypergraphs(k, alpha, max_vertices=None, require_no_isolated=True, require_connected=True):
     """
     Generate all (simple) hypergraphs up to isomorphism with:
       - exactly k hyperedges
@@ -205,6 +205,10 @@ def generate_nonisomorphic_hypergraphs(k, alpha, max_vertices=None, require_no_i
 
             # Build incidence graph and compute WL hash for fast bucketing.
             B = _incidence_graph_from_masks(edge_masks, n)
+            if require_connected and not nx.is_connected(B):
+                continue
+
+            # WL hash for fast bucketing
             h = _wl_hash_incidence_graph(B)
 
             bucket = reps_by_hash.setdefault(h, [])

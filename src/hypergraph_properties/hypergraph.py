@@ -106,3 +106,65 @@ class Hypergraph:
             q_edge = frozenset(v2blk[v] for v in e)
             Hq.add_edge(q_edge)
         return Hq
+    
+    def is_alpha_acyclic(self):
+        """
+        Check alpha-acyclicity via GYO reduction.
+
+        Returns True iff the GYO reduction eliminates all hyperedges.
+        """
+        # Work on a mutable copy of the edge family
+        edges = [set(e) for e in self.edges]
+
+        # If there are no edges, treat as alpha-acyclic
+        if not edges:
+            return True
+
+        changed = True
+        while changed:
+            changed = False
+
+            # Step1: remove vertices that appear in <= 1 hyperedge
+            counts = {}
+            for e in edges:
+                for v in e:
+                    counts[v] = counts.get(v, 0) + 1
+
+            removable = {v for v, c in counts.items() if c <= 1}
+            if removable:
+                for e in edges:
+                    e.difference_update(removable)
+                changed = True
+
+            # Step2: remove empty edges created by vertex deletions
+            new_edges = [e for e in edges if len(e) > 0]
+            if len(new_edges) != len(edges):
+                edges = new_edges
+                changed = True
+            else:
+                edges = new_edges
+
+            if not edges:
+                return True
+
+            # Step3: remove edges contained in other edges ----
+            to_remove = set()
+            for i in range(len(edges)):
+                if i in to_remove:
+                    continue
+                ei = edges[i]
+                for j in range(len(edges)):
+                    if i == j or j in to_remove:
+                        continue
+                    ej = edges[j]
+                    if ei.issubset(ej):
+                        to_remove.add(i)
+                        break
+
+            if to_remove:
+                edges = [e for idx, e in enumerate(edges) if idx not in to_remove]
+                changed = True
+
+        # If reduction stops with non-empty edges, not alpha-acyclic
+        return len(edges) == 0
+    
