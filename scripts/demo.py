@@ -58,6 +58,7 @@ def demo4():
 
 def demo5():
     path = "tests/hypergraphs_k3_3.txt"
+    output_path = "tests/hypergraphs_k3_3_acyclic.txt"
     venn_dict = build_venn_dictionary_from_file(path)
     out = {}
 
@@ -65,7 +66,7 @@ def demo5():
         if all(H.is_alpha_acyclic() for H in hypergraphs):
             out[key] = hypergraphs
 
-    print_venn_dictionary(out)
+    write_venn_dictionary_to_file(out, output_path)
 
 
 

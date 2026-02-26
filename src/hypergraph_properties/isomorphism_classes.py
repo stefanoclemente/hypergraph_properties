@@ -5,9 +5,6 @@ from hypergraph_properties.hypergraph import *
 def _popcount(x):
     """
     Return the number of 1-bits in the integer x (population count).
-
-    We prefer int.bit_count() when available (Python 3.8+), but keep
-    a safe fallback for older interpreters.
     """
     try:
         return x.bit_count()
