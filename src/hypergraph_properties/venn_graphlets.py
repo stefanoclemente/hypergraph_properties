@@ -127,9 +127,7 @@ class VennGraphlet3:
             Canonical 7-bit signature, invariant under permutations of
             (e1, e2, e3). This is the main identifier of the graphlet.
 
-        - motif_id:
-            Optional external label (e.g., 1..26 from the paper), if provided
-            via a lookup table.
+            
     """
 
     def __init__(self, e1, e2, e3, raw_signature, signature):
