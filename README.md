@@ -159,3 +159,56 @@ To generate a list of all non-isomorphic hypergraphs with arity alpha1 and numbe
 To save them to a text file:
 
     write_hypergraphs_to_file(hs,"hypergraphs_k" + str(k1) + "_" + str(alpha1) +".txt")
+
+## 6. Computing the list of Venn graphlets whose corresponding hypergraphs are ALL acyclic
+
+### Required import
+    
+    from hypergraph_properties.venn_index import build_venn_dictionary_from_file, write_venn_dictionary_to_file, print_venn_dictionary
+
+
+The alpha-acyclicity is computed using the GYO algorithm, and it has been added a method of the hypergraph class. 
+
+To check whether a given hypergraph H is alpha-acyclic,
+
+    H.is_acyclic()
+
+Given a text file containing the list of all (connected) hypergraphs with k=3 edges and arity = a = 3, the function build_venn_dictionary_from_file builds a map (dictionary) in which each venn graphlets is associated with the hypergraphs (contained in the file) that satisfy it. Venn graphlets are encoded as 7-bits vectors (see above). The function write_venn_dictionary_to_file lists all the venn graphlets along with their hypergraphs. 
+
+Example:
+
+    path = "tests/hypergraphs_k3_3.txt"
+    output_path = "tests/hypergraphs_k3_3_indexed.txt"
+
+    venn_dict = build_venn_dictionary_from_file(path)
+
+    for key in sorted(venn_dict):
+        print(f"{key}:")
+        for H in venn_dict[key]:
+            edges = [set(e) for e in H.edges]
+            print("  ", edges)
+        print()
+    write_venn_dictionary_to_file(venn_dict, output_path)
+
+Note that for k, a = 3 not all 26 venn diagrams are satisfied.
+
+The function "print_venn_dictionary" simply (pretty-)prints any dictionary built as above.
+
+    print_venn_dictionary(venn_dict)
+
+
+Finally, the entries (keys) of the dictionary can be easily filtered with the acyclicity test:
+
+    path = "tests/hypergraphs_k3_3.txt"
+    output_path = "tests/hypergraphs_k3_3_acyclic.txt"
+    venn_dict = build_venn_dictionary_from_file(path)
+    out = {}
+
+    for key, hypergraphs in venn_dict.items():
+        if all(H.is_alpha_acyclic() for H in hypergraphs):
+            out[key] = hypergraphs
+
+    write_venn_dictionary_to_file(out, output_path)
+
+
+The file tests/hypergraphs_k3_3_acyclic.txt lists all the Venn graphlets which are satisfied uniquely by non-acyclic hypergraphs. See demo4 and demo5.
