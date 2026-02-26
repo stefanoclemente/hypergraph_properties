@@ -167,7 +167,7 @@ To save them to a text file:
     from hypergraph_properties.venn_index import build_venn_dictionary_from_file, write_venn_dictionary_to_file, print_venn_dictionary
 
 
-The alpha-acyclicity is computed using the GYO algorithm, and it has been added a method of the hypergraph class. 
+The alpha-acyclicity is computed using the GYO algorithm, and it has been added as a method of the hypergraph class. 
 
 To check whether a given hypergraph H is alpha-acyclic,
 
@@ -175,7 +175,7 @@ To check whether a given hypergraph H is alpha-acyclic,
 
 Given a text file containing the list of all (connected) hypergraphs with k=3 edges and arity = a = 3, the function build_venn_dictionary_from_file builds a map (dictionary) in which each venn graphlets is associated with the hypergraphs (contained in the file) that satisfy it. Venn graphlets are encoded as 7-bits vectors (see above). The function write_venn_dictionary_to_file lists all the venn graphlets along with their hypergraphs. 
 
-Example:
+Example (demo4):
 
     path = "tests/hypergraphs_k3_3.txt"
     output_path = "tests/hypergraphs_k3_3_indexed.txt"
@@ -197,7 +197,9 @@ The function "print_venn_dictionary" simply (pretty-)prints any dictionary built
     print_venn_dictionary(venn_dict)
 
 
-Finally, the entries (keys) of the dictionary can be easily filtered with the acyclicity test:
+Finally, the entries (keys) of the dictionary can be easily filtered through the acyclicity test. [TBD: this could become a function]
+
+Example (demo5): 
 
     path = "tests/hypergraphs_k3_3.txt"
     output_path = "tests/hypergraphs_k3_3_acyclic.txt"
@@ -211,4 +213,4 @@ Finally, the entries (keys) of the dictionary can be easily filtered with the ac
     write_venn_dictionary_to_file(out, output_path)
 
 
-The file tests/hypergraphs_k3_3_acyclic.txt lists all the Venn graphlets which are satisfied uniquely by non-acyclic hypergraphs. See demo4 and demo5.
+The file tests/hypergraphs_k3_3_acyclic.txt lists all the Venn graphlets which are satisfied only by acyclic hypergraphs. See demo4 and demo5.
