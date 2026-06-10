@@ -168,3 +168,298 @@ class Hypergraph:
         # If reduction stops with non-empty edges, not alpha-acyclic
         return len(edges) == 0
     
+    def join_tree1(self):
+        """
+        Build a join tree via GYO reduction.
+
+        Returns
+        -------
+        root:
+            Index of the root hyperedge.
+
+        parent:
+            Dictionary mapping each hyperedge index to its parent index.
+
+        children:
+            Dictionary mapping each hyperedge index to its children.
+
+        Raises
+        ------
+        ValueError
+            If the hypergraph is not alpha-acyclic.
+        """
+        # Work on a mutable copy of the edge family, keeping original indices
+        edges = [(idx, set(e)) for idx, e in enumerate(self.edges)]
+
+        # If there are no edges, there is no join tree to build
+        if not edges:
+            raise ValueError("Cannot build a join tree of a hypergraph with no edges.")
+
+        # If there is only one hyperedge, the join tree is a single node
+        if len(edges) == 1:
+            return 0, {0: None}, {0: []}
+
+        # Undirected adjacency list of the join tree
+        tree = {idx: set() for idx in range(len(self.edges))}
+
+        changed = True
+        while changed:
+            changed = False
+
+            # Step1: remove vertices that appear in <= 1 hyperedge
+            counts = {}
+            for _, e in edges:
+                for v in e:
+                    counts[v] = counts.get(v, 0) + 1
+
+            removable = {v for v, c in counts.items() if c <= 1}
+            if removable:
+                for _, e in edges:
+                    e.difference_update(removable)
+                changed = True
+
+            # Step2: remove empty edges created by vertex deletions
+            new_edges = [(idx, e) for idx, e in edges if len(e) > 0]
+
+            # If an edge becomes empty, attach it to any remaining active edge.
+            # This mirrors the GYO deletion, but also records a join-tree edge.
+            empty_edges = [(idx, e) for idx, e in edges if len(e) == 0]
+
+            if empty_edges and new_edges:
+                parent_idx = new_edges[0][0]
+
+                for idx, _ in empty_edges:
+                    tree[idx].add(parent_idx)
+                    tree[parent_idx].add(idx)
+
+                edges = new_edges
+                changed = True
+            else:
+                edges = new_edges
+
+            if len(edges) == 1:
+                break
+
+            # Step3: remove edges contained in other edges
+            to_remove = set()
+            contains = {}
+
+            for i in range(len(edges)):
+                if i in to_remove:
+                    continue
+
+                idx_i, ei = edges[i]
+
+                for j in range(len(edges)):
+                    if i == j or j in to_remove:
+                        continue
+
+                    idx_j, ej = edges[j]
+
+                    if ei.issubset(ej):
+                        to_remove.add(i)
+                        contains[i] = j
+                        break
+
+            if to_remove:
+                for i in to_remove:
+                    j = contains[i]
+
+                    idx_i, _ = edges[i]
+                    idx_j, _ = edges[j]
+
+                    # If edge i is contained in edge j, connect their
+                    # original hyperedges in the join tree.
+                    tree[idx_i].add(idx_j)
+                    tree[idx_j].add(idx_i)
+
+                edges = [
+                    edge
+                    for i, edge in enumerate(edges)
+                    if i not in to_remove
+                ]
+                changed = True
+
+        # If reduction stops with more than one active edge, no join tree exists
+        if len(edges) != 1:
+            raise ValueError("The hypergraph is not alpha-acyclic.")
+
+        # Root the constructed join tree at the last remaining hyperedge
+        root = edges[0][0]
+        parent = {root: None}
+        children = {idx: [] for idx in range(len(self.edges))}
+
+        stack = [root]
+
+        while stack:
+            idx = stack.pop()
+
+            for other in tree[idx]:
+                if other == parent.get(idx):
+                    continue
+
+                parent[other] = idx
+                children[idx].append(other)
+                stack.append(other)
+
+        return root, parent, children
+    
+    def join_tree(self):
+        """
+        Build a join tree using a GYO-style reduction.
+
+        The nodes of the join tree are the hyperedges of the hypergraph,
+        represented by their indices in self.edges.
+
+        Returns
+        -------
+        root:
+            Index of the root hyperedge.
+
+        parent:
+            Dictionary mapping each hyperedge index to its parent index.
+            The root has parent None.
+
+        children:
+            Dictionary mapping each hyperedge index to its children.
+
+        Raises
+        ------
+        ValueError
+            If the hypergraph is not alpha-acyclic.
+        """
+        edges = [(idx, set(e)) for idx, e in enumerate(self.edges)]
+
+        if not edges:
+            raise ValueError("Cannot build a join tree of a hypergraph with no edges.")
+
+        if len(edges) == 1:
+            return 0, {0: None}, {0: []}
+
+        tree = {idx: set() for idx in range(len(self.edges))}
+        last_removed = None
+
+        changed = True
+
+        while changed:
+            changed = False
+
+            # Step 1: remove vertices that appear in at most one hyperedge.
+            counts = {}
+
+            for _, e in edges:
+                for v in e:
+                    counts[v] = counts.get(v, 0) + 1
+
+            removable = {v for v, c in counts.items() if c <= 1}
+
+            if removable:
+                for _, e in edges:
+                    e.difference_update(removable)
+
+                changed = True
+
+            # Step 2: remove empty hyperedges.
+            new_edges = [(idx, e) for idx, e in edges if len(e) > 0]
+            empty_edges = [(idx, e) for idx, e in edges if len(e) == 0]
+
+            if empty_edges:
+                if new_edges:
+                    # Attach every empty edge to an arbitrary remaining active edge.
+                    parent_idx = new_edges[0][0]
+
+                    for idx, _ in empty_edges:
+                        tree[idx].add(parent_idx)
+                        tree[parent_idx].add(idx)
+                        last_removed = idx
+
+                else:
+                    # All remaining edges became empty at the same time.
+                    # They can be connected arbitrarily.
+                    root_idx = empty_edges[0][0]
+                    last_removed = root_idx
+
+                    for idx, _ in empty_edges[1:]:
+                        tree[root_idx].add(idx)
+                        tree[idx].add(root_idx)
+                        last_removed = idx
+
+                edges = new_edges
+                changed = True
+
+            if len(edges) == 0:
+                break
+
+            # Step 3: remove hyperedges contained in other hyperedges.
+            to_remove = set()
+            contains = {}
+
+            for i in range(len(edges)):
+                if i in to_remove:
+                    continue
+
+                idx_i, ei = edges[i]
+
+                for j in range(len(edges)):
+                    if i == j or j in to_remove:
+                        continue
+
+                    idx_j, ej = edges[j]
+
+                    if ei.issubset(ej):
+                        to_remove.add(i)
+                        contains[i] = j
+                        break
+
+            if to_remove:
+                for i in to_remove:
+                    j = contains[i]
+
+                    idx_i, _ = edges[i]
+                    idx_j, _ = edges[j]
+
+                    # If edge i is contained in edge j, connect them in the join tree.
+                    tree[idx_i].add(idx_j)
+                    tree[idx_j].add(idx_i)
+
+                    last_removed = idx_i
+
+                edges = [
+                    edge
+                    for i, edge in enumerate(edges)
+                    if i not in to_remove
+                ]
+
+                changed = True
+
+        # If GYO did not remove all edges, the hypergraph is not alpha-acyclic.
+        if edges:
+            raise ValueError("The hypergraph is not alpha-acyclic.")
+
+        if last_removed is None:
+            raise ValueError("Could not build a join tree.")
+
+        # Root the constructed join tree.
+        root = last_removed
+        parent = {root: None}
+        children = {idx: [] for idx in range(len(self.edges))}
+
+        stack = [root]
+        visited = set()
+
+        while stack:
+            idx = stack.pop()
+            visited.add(idx)
+
+            for other in tree[idx]:
+                if other == parent.get(idx):
+                    continue
+
+                parent[other] = idx
+                children[idx].append(other)
+                stack.append(other)
+
+        if len(visited) != len(self.edges):
+            raise ValueError("Could not build a connected join tree.")
+
+        return root, parent, children

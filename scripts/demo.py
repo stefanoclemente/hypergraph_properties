@@ -1,6 +1,7 @@
 from hypergraph_properties.hypergraph import Hypergraph
 from hypergraph_properties.isomorphism import *
 from hypergraph_properties.partitions import *
+from hypergraph_properties.homomorphisms import *
 from hypergraph_properties.isomorphism_classes import *
 from hypergraph_properties.venn_graphlets import VennGraphlet3
 from hypergraph_properties.venn_index import build_venn_dictionary_from_file, write_venn_dictionary_to_file, print_venn_dictionary
@@ -68,7 +69,60 @@ def demo5():
 
     write_venn_dictionary_to_file(out, output_path)
 
+def demo6():
+    print("Demo 6: homomorphism counting on acyclic hypergraphs")
+
+    H = Hypergraph.from_edges([
+    {1, 2},
+    {2, 3},
+    {3, 4},
+])
+    G = Hypergraph.from_edges([{"a", "b"}, {"b", "c"}, {"a", "c"}])
+
+    print("\nPattern H:")
+    print(H)
+
+    print("\nTarget G:")
+    print(G)
+
+    dp_count = count_homomorphisms_acyclic(H, G)
+    brute_force_count = count_homomorphisms_bruteforce(H, G)
+
+    print("\nDP count:", dp_count)
+    print("Brute-force count:", brute_force_count)
+    print("Correct?", dp_count == brute_force_count)
+
+def demo7():
+    print("Demo 7: homomorphism counting with larger hyperedges")
+
+    H = Hypergraph.from_edges([
+        {1, 2, 3},
+        {3, 4},
+    ])
+
+    G = Hypergraph.from_edges([
+        {"a", "b", "c"},
+        {"c", "d"},
+        {"a", "c"},
+        {"b", "d"},
+    ])
+
+    print("\nPattern H:")
+    print(H)
+
+    print("\nTarget G:")
+    print(G)
+
+    print("\nH is alpha-acyclic:", H.is_alpha_acyclic())
+
+    dp_count = count_homomorphisms_acyclic(H, G)
+    brute_force_count = count_homomorphisms_bruteforce(H, G)
+
+    print("\nDP count:", dp_count)
+    print("Brute-force count:", brute_force_count)
+    print("Correct?", dp_count == brute_force_count)
+
 
 
 if __name__ == "__main__":
-    demo5()
+    demo7()
