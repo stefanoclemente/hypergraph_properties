@@ -56,10 +56,41 @@ def all_partitions(n):
 
     return result
 
-def moebius_function(partition):
+def vertex_partitions(vertices):
     """
-    Compute the moebius function for a given partition rho:
+    Generate all partitions of the given vertex set.
+
+    This wraps all_partitions(n), which generates partitions of {1, ..., n},
+    and converts them into partitions of the actual vertices.
+    """
+    vertices = list(vertices)
+
+    for partition in all_partitions(len(vertices)):
+        converted_partition = []
+
+        for block in partition:
+            converted_block = {vertices[i - 1] for i in block}
+            converted_partition.append(converted_block)
+
+        yield converted_partition
+
+def moebius_function_top(partition):
+    """
+    Computes the top moebius function for a given partition rho:
     mu(rho) = (-1)^(|rho|-1) * (|rho|-1)!
     """
     rho = len(partition)
     return (-1) ** (rho - 1) * math.factorial(rho - 1)
+
+def moebius_function(partition):
+    """
+    Computes the bottom Möbius function where each block B contributes
+    (-1)^(|B|-1) * (|B|-1)!.
+    """
+    result = 1
+
+    for block in partition:
+        size = len(block)
+        result *= (-1) ** (size - 1) * math.factorial(size - 1)
+
+    return result

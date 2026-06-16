@@ -220,3 +220,15 @@ def count_homomorphisms_acyclic(H, G):
 
     # At the root, there is no parent separator.
     return DP[(root, freeze_assignment({}))]
+
+def count_homomorphisms(H, G):
+    """
+    Count homomorphisms from H to G.
+
+    If H is alpha-acyclic, use the join-tree dynamic program.
+    Otherwise, fall back to brute force.
+    """
+    if H.is_alpha_acyclic():
+        return count_homomorphisms_acyclic(H, G)
+
+    return count_homomorphisms_bruteforce(H, G)

@@ -34,6 +34,18 @@ def is_isomorphic(H1, H2, return_mapping=False):
         return iso
     return iso, (gm.mapping if iso else None)
 
+def find_isomorphic_representative(H, representatives):
+    """
+    Return a representative isomorphic to H, if one exists.
+
+    Otherwise return None.
+    """
+    for representative in representatives:
+        if is_isomorphic(H, representative):
+            return representative
+
+    return None
+
 
 def induced_vertex_mapping_from_incidence_mapping(incidence_mapping):
     out = {}

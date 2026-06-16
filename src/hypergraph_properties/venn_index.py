@@ -70,3 +70,31 @@ def write_venn_dictionary_to_file(venn_dict, path):
                 f.write("  " + line + "\n")
 
             f.write("\n")
+
+def read_graphlets_from_file(path):
+    """
+    Read graphlets from a Venn-indexed file.
+
+    The file contains lines of two types:
+        [0, 1, ...]:
+        {{1, 2}, {2, 3}, {1, 3}}
+
+    Only the hypergraph lines are parsed.
+    """
+    graphlets = []
+
+    with open(path, "r", encoding="utf-8") as f:
+        for raw in f:
+            line = raw.strip()
+
+            if not line:
+                continue
+
+            if line.startswith("["):
+                continue
+
+            edges = parse_hypergraph_line(line)
+            H = Hypergraph.from_edges(edges)
+            graphlets.append(H)
+
+    return graphlets

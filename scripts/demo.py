@@ -4,7 +4,9 @@ from hypergraph_properties.partitions import *
 from hypergraph_properties.homomorphisms import *
 from hypergraph_properties.isomorphism_classes import *
 from hypergraph_properties.venn_graphlets import VennGraphlet3
-from hypergraph_properties.venn_index import build_venn_dictionary_from_file, write_venn_dictionary_to_file, print_venn_dictionary
+from hypergraph_properties.venn_index import build_venn_dictionary_from_file, write_venn_dictionary_to_file, print_venn_dictionary, read_graphlets_from_file
+from hypergraph_properties.edge_sub_count import count_edge_subgraphs_via_formula
+import time 
 
 def demo1():
     H = Hypergraph.from_edges([{1, 2, 3}, {3, 4}, {2, 4}])
@@ -123,6 +125,89 @@ def demo7():
     print("Correct?", dp_count == brute_force_count)
 
 
+def demo8():
+    print("Demo 8: timing DP vs brute force")
+
+    H = Hypergraph.from_edges([
+        {1, 2},
+        {2, 3},
+        {3, 4},
+        {4, 5},
+        {5, 6},
+        {6, 7},
+    ])
+
+    G = Hypergraph.from_edges([
+        {"a", "b"},
+        {"b", "c"},
+        {"c", "d"},
+        {"d", "e"},
+        {"e", "f"},
+        {"f", "g"},
+        {"a", "c"},
+        {"b", "d"},
+        {"c", "e"},
+        {"d", "f"},
+        {"e", "g"},
+    ])
+
+    print("\nPattern H:")
+    print(H)
+
+    print("\nTarget G:")
+    print(G)
+
+    print("\nH is alpha-acyclic:", H.is_alpha_acyclic())
+
+    start = time.perf_counter()
+    dp_count = count_homomorphisms_acyclic(H, G)
+    dp_time = time.perf_counter() - start
+
+    start = time.perf_counter()
+    brute_force_count = count_homomorphisms_bruteforce(H, G)
+    brute_force_time = time.perf_counter() - start
+
+    print("\nDP count:", dp_count)
+    print("Brute-force count:", brute_force_count)
+    print("Correct?", dp_count == brute_force_count)
+
+    print("\nDP time:", dp_time)
+    print("Brute-force time:", brute_force_time)
+
+def demo9():
+    print("Demo 9: evaluating formula (6) on acyclic 3-edge graphlets")
+
+    path = "tests/hypergraphs_k3_3_acyclic.txt"
+    graphlets = read_graphlets_from_file(path)
+
+    G = Hypergraph.from_edges([
+        {"a", "b"},
+        {"b", "c"},
+        {"c", "d"},
+        {"d", "e"},
+        {"a", "c"},
+        {"b", "d"},
+        {"c", "e"},
+        {"a", "b", "c"},
+        {"b", "c", "d"},
+        {"c", "d", "e"},
+    ])
+
+    print("\nNumber of graphlets:", len(graphlets))
+    print("All graphlets alpha-acyclic:", all(H.is_alpha_acyclic() for H in graphlets))
+
+    print("\nTarget G:")
+    print(G)
+
+    start = time.perf_counter()
+    count = count_edge_subgraphs_via_formula(graphlets, G)
+    elapsed = time.perf_counter() - start
+
+    print("\nFormula count:", count)
+    print("Formula count as int:", int(count))
+    print("Time:", elapsed)
+
+
 
 if __name__ == "__main__":
-    demo7()
+    demo9()
