@@ -178,7 +178,7 @@ def demo9():
     print("Demo 9: evaluating formula (6) on acyclic 3-edge graphlets")
 
     path = "tests/hypergraphs_k3_3_acyclic.txt"
-    graphlets = read_graphlets_from_file(path)
+    graphlets = read_graphlets_from_file(path) # This part needs to be modified. These are not the graphlets we need.
 
     G = Hypergraph.from_edges([
         {"a", "b"},
@@ -204,7 +204,6 @@ def demo9():
     elapsed = time.perf_counter() - start
 
     print("\nFormula count:", count)
-    print("Formula count as int:", int(count))
     print("Time:", elapsed)
 
 

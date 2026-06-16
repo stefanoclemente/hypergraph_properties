@@ -11,7 +11,7 @@ def aggregate_quotient_coefficients(graphlets):
     """
     Aggregate quotient coefficients by isomorphism type.
 
-    The input graphlets are assumed to be exactly the graphlets satisfying Phi.
+    The input graphlets are assumed to be exactly the graphlets satisfying Phi and up to a certain arity.
 
     For every graphlet H and every partition rho of V(H), we compute H/rho.
     Quotients that are isomorphic are merged into the same coefficient.
